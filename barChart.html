@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://cdn.bootcdn.net/ajax/libs/d3/7.8.5/d3.min.js"></script>
+</head>
+<body>
+  <script>
+    const data = [100, 200, 300, 400, 500, 600, 700, 800]
+    const xData = ['2011', '2012', '2013', '2014', '2015', '2016', '2017', '2018']
+
+    const xAxisScale = d3.scaleBand().domain(xData).range([0, 400])
+    const yAxisScale = d3.scaleLinear().domain([0, 800]).range([400, 0])
+
+    // 创建画布空间
+    d3.select('body')
+        .append('svg')
+        .attr('width', 500)
+        .attr('height', 500)
+        .attr('class', 'svg')
+
+     // 定义x轴
+     const xAxis = d3.axisBottom(xAxisScale)
+      .ticks(8)
+      .tickSize(6)
+      .tickPadding(5)
+    
+    // 绘制x轴
+    d3.select('.svg')
+        .append('g')
+        .attr('transform', 'translate(50,430)')
+        .attr('class', 'x-axis')
+        .call(xAxis)
+
+    // 定义y轴
+    const yAxis = d3.axisLeft(yAxisScale)
+      .ticks(8)
+      .tickSize(6)
+      .tickPadding(5)
+    
+    // 绘制y轴
+    d3.select('.svg')
+        .append('g')
+        .attr('transform', 'translate(50,30)')
+        .attr('class', 'y-axis')
+        .call(yAxis)
+    
+    // 绘制柱形
+    d3.selectAll('.x-axis .tick')
+      .append('rect')
+      .attr('class', 'rect')
+      .attr('transform', 'translate(-10, 0)')
+      .attr('x', 0)
+      .attr('width', 20)
+      .attr('height', 0)
+      .attr('y', 0)
+      .attr('fill', '#2e6be6')
+
+    // 定义柱形的过渡动画
+      .transition()
+        .duration(2000)
+        .delay((d,i) => 200 * i)
+        .ease(d3.easeBounce)
+        .attr('height', (d,i) => data[i]*0.5)
+        .attr('y', (d,i) => -data[i]*0.5)
+    
+    
+    // 绘制柱形上的数据标签
+    d3.selectAll('.x-axis .tick')
+      .append('text')
+      .attr('class', 'text')
+      .attr('transform', 'translate(0, 0)')
+      .attr('x', 0)
+      .attr('y', 0)
+      .text((d,i) => data[i])
+      .attr('fill', '#2e6be6')
+
+    // 定义数据标签的过渡动画
+      .transition()
+        .duration(2000)
+        .delay((d,i) => 200*i)
+        .ease(d3.easeBounce)
+        .attr('y', (d,i) => -data[i] * 0.5 - 5)
+
+
+
+  </script>
+</body>
+</html>
