@@ -55,15 +55,15 @@
       .attr('transform', 'translate(-10, 0)')
       .attr('x', 0)
       .attr('width', 20)
-      .attr('height', 0)
+      // .attr('height', 0)
       .attr('y', 0)
       .attr('fill', '#2e6be6')
 
     // 定义柱形的过渡动画
       .transition()
-        .duration(2000)
-        .delay((d,i) => 200 * i)
-        .ease(d3.easeBounce)
+        // .duration(2000)
+        // .delay((d,i) => 200 * i)
+        // .ease(d3.easeBounce)
         .attr('height', (d,i) => data[i]*0.5)
         .attr('y', (d,i) => -data[i]*0.5)
     

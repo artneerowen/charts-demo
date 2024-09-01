@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="https://cdn.bootcdn.net/ajax/libs/d3/7.8.5/d3.min.js"></script>
+  </head>
+  <body>
+    <script>
+      // 数据准备
+      // 关于前端面试中各部分内容占比，共收到了300份小伙伴的投票
+      const sourceData = [
+        { x: "html", y: 58 },
+        { x: "css", y: 30 },
+        { x: "javascript", y: 120 },
+        { x: "vue", y: 92 },
+      ];
+
+      const width = 500, height = 500
+
+      // 创建画布空间
+      const svg = d3.select("body")
+        .append("svg")
+        .attr("width", width)
+        .attr("height", height)
+
+      // 饼图生成器，将源数据转化为对应扇形角度信息
+      const pie = d3.pie().value(d => d.y)
+      const arcData = pie(sourceData)
+
+      // 弧生成器，绘制扇形
+      const radius = Math.min(width, height) * 0.8 / 2
+      const arc = d3.arc()
+        .innerRadius(0)
+        .outerRadius(radius)
+      
+      // 渲染扇形到画布中
+      const noColorPie = svg.append('g')
+        .selectAll('path')
+        .data(arcData)
+        .enter()
+        .append('path')
+        .attr('d', d => arc(d))
+
+      // 到这步时，已经出现一个右下1/4黑圆，需要处理平移
+      d3.select('g')
+        .attr('transform', `translate(${width / 2}, ${height / 2})`)
+      
+
+      // 色值比例尺
+      const colorScale = d3.scaleOrdinal()
+        .domain(d3.range(sourceData.length))
+        .range(d3.schemeCategory10)
+      
+      // 着色
+      noColorPie
+        .attr('fill', d => colorScale(d.index))
+
+
+      // 数据标签
+      const totalValue = d3.sum(sourceData, d => d.y)
+
+      svg.append('g')
+        .attr('transform', `translate(${width / 2}, ${height / 2})`)
+        .selectAll('text')
+        .data(arcData)
+        .enter()
+        .append('text')
+        .attr('transform', d => `translate(${arc.centroid(d)})`)
+        .attr('text-anchor', 'middle')
+        .attr('font-size', '10px')
+        .text(d => {
+          const value = (d.data.y / totalValue * 100).toFixed(2) + '%'
+          const name = d.data.x
+          return name + ' ' + value
+        })
+
+      svg.append('text')
+        .text('饼图之前端面试题比重')
+        .attr('font-size', '20px')
+        .attr("text-anchor", "middle")
+        .attr('transform', `translate(${width / 2}, 20)`)
+
+    </script>
+  </body>
+</html>
